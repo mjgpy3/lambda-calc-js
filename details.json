@@ -1,0 +1,5 @@
+{
+  "exe": "node",
+  "main": "src/lambdaCalc.js",
+  "specVersion": 0
+}
