@@ -1,3 +1,36 @@
+// Ast -> Ast
+function evaluate(ast) {
+  return evalInEnv(ast, []);
+}
+
+function evalInEnv(ast, env) {
+  if (ast.type === 'lambda') {
+    return {
+      type: 'closure',
+      arg: ast.arg,
+      body: ast.body,
+      env: env
+    };
+  }
+  if (ast.type === 'name') {
+    return lookup(ast.value, env);
+  }
+  if (ast.type === 'application') {
+    var closure = evalInEnv(ast.fn, env),
+      value = evalInEnv(ast.arg, env);
+
+    var newEnv = [[closure.arg, value]].concat(closure.env).concat(env);
+
+    return evalInEnv(closure.body, newEnv);
+  }
+}
+
+function lookup(name, env) {
+  return env.find(function (pair) {
+    return pair[0] === name;
+  })[1];
+}
+
 // [Token] -> Ast
 function parse(tokens) {
   return parseSingle(tokens).ast;
