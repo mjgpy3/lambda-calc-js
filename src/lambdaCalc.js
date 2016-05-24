@@ -1,3 +1,10 @@
+var simpleTokens = {
+  '(': 'lparen',
+  ')': 'rparen',
+  '\\': 'lambda',
+  '.': 'dot'
+};
+
 function tokenize(text) {
   if (text.length === 0) {
     return [];
@@ -6,24 +13,9 @@ function tokenize(text) {
   var first = text[0],
     rest = text.slice(1);
 
-  if (first === '(') {
+  if (first in simpleTokens) {
     return [{
-      type: 'lparen'
-    }].concat(tokenize(rest));
-  }
-  if (first === ')') {
-    return [{
-      type: 'rparen'
-    }].concat(tokenize(rest));
-  }
-  if (first === '\\') {
-    return [{
-      type: 'lambda'
-    }].concat(tokenize(rest));
-  }
-  if (first === '.') {
-    return [{
-      type: 'dot'
+      type: simpleTokens[first]
     }].concat(tokenize(rest));
   }
   if (first.match(/[a-z]/)) {
@@ -35,5 +27,3 @@ function tokenize(text) {
 
   return tokenize(rest);
 }
-
-console.log(tokenize('\\  x  .   x   '));
