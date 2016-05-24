@@ -1,3 +1,27 @@
+function interpreter(code) {
+  return pretty(
+    evaluate(
+      parse(
+        tokenize(
+          code
+        )
+      )
+    )
+  );
+}
+
+// Ast -> String
+function pretty(ast) {
+  if (ast.type === 'name') {
+    return ast.value;
+  }
+  if (ast.type === 'application') {
+    return '(' + pretty(ast.fn) + ' ' + pretty(ast.arg) + ')';
+  }
+
+  return '\\' + ast.arg + '.' + pretty(ast.body);
+}
+
 // Ast -> Ast
 function evaluate(ast) {
   return evalInEnv(ast, []);
@@ -100,4 +124,18 @@ function tokenize(text) {
   }
 
   return tokenize(rest);
+}
+
+if (process && process.argv && process.argv[2]) {
+  console.log(interpreter(process.argv[2]));
+}
+
+if (module) {
+  module.exports = {
+    interpreter: interpreter,
+    pretty: pretty,
+    evaluate: evaluate,
+    parse: parse,
+    tokenize: tokenize
+  };
 }
